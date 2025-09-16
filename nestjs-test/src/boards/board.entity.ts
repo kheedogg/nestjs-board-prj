@@ -3,7 +3,7 @@ import { BoardStatus } from "./board-status.enum";
 import { Entity } from "typeorm";
 
 @Entity()
-export class Board  extends BaseEntity{
+export class Board extends BaseEntity{
     @PrimaryGeneratedColumn()
     id: number;
 

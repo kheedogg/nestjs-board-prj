@@ -4,21 +4,17 @@ import { BoardStatus } from './board-status.enum';
 // import { v1 as uuid } from 'uuid';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { BoardRepository } from './board.repository';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class BoardsService {
-    // Repository 사용한 버전으로 변경하기 위해 주석처리
-    
-    // private boards: Board[] = [];
     
     constructor(
         private boardRepository: BoardRepository,
+        // @InjectRepository(BoardRepository)
+        // private boardRepository: BoardRepository,
     ) {}
 
-
-    // getAllBoards(): Board[] {
-    //     return this.boards;
-    // }
     async getAllBoards(): Promise<Board[]> {
         return await this.boardRepository.findAll();
     }
