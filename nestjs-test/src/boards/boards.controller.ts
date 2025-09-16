@@ -1,12 +1,14 @@
-import { Controller, Get, Post, Body, Param, Delete, Patch, ValidationPipe, ParseIntPipe, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Patch, ValidationPipe, ParseIntPipe, Query, UseGuards } from '@nestjs/common';
 import { BoardsService } from './boards.service';
 import { Board } from './board.entity';
 import { BoardStatus } from './board-status.enum';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UsePipes } from '@nestjs/common';
 import { BoardStatusValidationPipe } from './pipes/board-status-validation.pipe';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('boards')
+@UseGuards(AuthGuard())
 export class BoardsController {
     // Entity 사용한 버전으로 변경하기 위해 주석처리
     constructor(private boardsService: BoardsService) {}

@@ -13,36 +13,12 @@ export class UserRepository {
         private jwtService: JwtService,
     ) {}
 
-    async createUser(authCredentialsDto: AuthCredentialsDto): Promise<void> {
-        const salt = await bcrypt.genSalt();
-        const { username, password } = authCredentialsDto;
-        const hashedPassword = await bcrypt.hash(password, salt);
-        const user = this.userRepository.create({ username, password: hashedPassword });
-
-        try {
-            await this.userRepository.save(user);
-        } catch (error) {
-            if (error.code === '23505') {
-                throw new ConflictException('Username already exists');
-            } else {
-                throw new InternalServerErrorException();
-            }
-        }
-    
+    async findOne(username: string): Promise<User | null> {
+        return await this.userRepository.findOne({ where: { username } });
     }
 
-    async signIn(authCredentialsDto: AuthCredentialsDto): Promise<{accessToken: string}> {
-        const { username, password } = authCredentialsDto;
-        const user = await this.userRepository.findOne({ where: { username } });
-        if (user && await bcrypt.compare(password, user.password)) {
-            // jwt 토큰 생성 ( Secret + Payload )
-            const payload = { username };
-            const accessToken = await this.jwtService.sign(payload);
-            // return 'logInSuccess';
-            return { accessToken };
-        } else {
-            throw new UnauthorizedException('logInFailed');
-        }
+    async save(user: User): Promise<User> {
+        return await this.userRepository.save(user);
     }
 
 }
