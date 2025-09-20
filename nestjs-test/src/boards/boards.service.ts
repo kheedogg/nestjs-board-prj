@@ -4,7 +4,7 @@ import { BoardStatus } from './board-status.enum';
 // import { v1 as uuid } from 'uuid';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { BoardRepository } from './board.repository';
-import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/auth/user.entity';
 
 @Injectable()
 export class BoardsService {
@@ -15,8 +15,9 @@ export class BoardsService {
         // private boardRepository: BoardRepository,
     ) {}
 
-    async getAllBoards(): Promise<Board[]> {
-        return await this.boardRepository.findAll();
+    async getAllBoards(user: User): Promise<Board[]> {
+        const boards = await this.boardRepository.findAll(user);
+        return boards;
     }
 
     // createBoard(createBoardDto: CreateBoardDto): Board {
@@ -31,13 +32,14 @@ export class BoardsService {
     //     return board;
     // }
 
-    async createBoard(createBoardDto: CreateBoardDto): Promise<Board> {
+    async createBoard(createBoardDto: CreateBoardDto, user: User): Promise<Board> {
         const {title, description} = createBoardDto;
 
         return await this.boardRepository.create({
             title,
             description,
             status: BoardStatus.PUBLIC,
+            user,
         });
     }
 
@@ -64,8 +66,8 @@ export class BoardsService {
     //     this.boards = this.boards.filter((board) => board.id !== found.id);
     // }
 
-    async deleteBoardById(id: number): Promise<void> {
-        await this.boardRepository.deleteById(id);
+    async deleteBoardById(id: number, user: User): Promise<void> {
+        await this.boardRepository.deleteById(id, user);
     }
 
     // updateBoardStatus(id: string, status: BoardStatus): Board {
